@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import getColumns from './components/_columns';
@@ -31,6 +31,7 @@ function mapStateToProps(state) {
 	const tags = selectors.getActiveThreadTags(state);
 	const filteredThreads = selectors.getMyTurnFilteredThreads(state);
 	const { useLightTheme } = getUi(state);
+	console.log({ state });
 	return {
 		activeThreads,
 		filteredThreads,
@@ -42,41 +43,49 @@ function mapStateToProps(state) {
 	};
 }
 
-class MyTurnThreads extends Component {
-	componentDidMount() {
-		const { activeThreads, fetchActiveThreads } = this.props;
+// function MyTurnThreads(props) {
+// 	const [status, threads] = useThreads('myturn');
+// 	if (status === 'loading' || status === 'done') { // due to chunking, i guess?
+// 		return <ThreadTable {...props} threads={threads} />;
+// 	}
+
+// 	return <Error />;
+// }
+
+function MyTurnThreads(props) {
+	const { activeThreads, fetchActiveThreads } = props;
+
+	useEffect(() => {
 		if (!activeThreads || !activeThreads.length) {
 			fetchActiveThreads();
 		}
-	}
+	}, []);
 
-	render() {
-		const {
-			filteredThreads,
-			openUntrackThreadModal,
-			openEditThreadModal,
-			toggleThreadIsArchived,
-			toggleThreadIsMarkedQueued,
-			characters,
-			partners,
-			lastPosters,
-			tags
-		} = this.props;
-		return (
-			<ThreadTable
-				{...this.props}
-				filteredThreads={filteredThreads}
-				tags={tags}
-				columns={getColumns(characters, partners, lastPosters)}
-				tdProps={getTdProps(
-					openUntrackThreadModal,
-					openEditThreadModal,
-					toggleThreadIsArchived,
-					toggleThreadIsMarkedQueued
-				)}
-			/>
-		);
-	}
+	const {
+		filteredThreads,
+		openUntrackThreadModal,
+		openEditThreadModal,
+		toggleThreadIsArchived,
+		toggleThreadIsMarkedQueued,
+		characters,
+		partners,
+		lastPosters,
+		tags
+	} = props;
+	return (
+		<ThreadTable
+			{...props}
+			filteredThreads={filteredThreads}
+			tags={tags}
+			columns={getColumns(characters, partners, lastPosters)}
+			tdProps={getTdProps(
+				openUntrackThreadModal,
+				openEditThreadModal,
+				toggleThreadIsArchived,
+				toggleThreadIsMarkedQueued
+			)}
+		/>
+	);
 }
 
 MyTurnThreads.propTypes = propTypes;
