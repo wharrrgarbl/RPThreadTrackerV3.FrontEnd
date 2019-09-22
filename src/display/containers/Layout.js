@@ -29,6 +29,7 @@ import Tools from '../views/tools/Tools';
 import Settings from '../views/settings/Settings';
 import Help from '../views/help/Help';
 import withPageViewTracker from '../../infrastructure/withPageViewTracker';
+import { ThreadProvider } from "./ThreadProvider";
 // #endregion imports
 
 const propTypes = {
@@ -111,51 +112,52 @@ class Layout extends Component {
 			<div className="app" data-spec="layout-app">
 				<ReduxToastr />
 				<HeaderContainer />
-				<div className="app-body">
-					<Sidebar {...this.props} />
-					<main className="main">
-						<BreadcrumbWrapper isLoadingIconVisible={isLoadingIconVisible} />
-						<Container fluid>
-							<Switch>
-								<Route path="/dashboard" name="Dashboard" component={Dashboard} />
-								<Route path="threads/*" name="Threads" component={Threads} />
-								<Route
-									path="/threads/all"
-									name="Threads"
-									render={
-										/* istanbul ignore next */
-										() => <Threads Renderable={AllThreads} />
+				<ThreadProvider>
+					<div className="app-body">
+						<Sidebar {...this.props} />
+						<main className="main">
+							<BreadcrumbWrapper isLoadingIconVisible={isLoadingIconVisible} />
+							<Container fluid>
+								<Switch>
+									<Route path="/dashboard" name="Dashboard" component={Dashboard} />
+									<Route path="threads/*" name="Threads" component={Threads} />
+									<Route
+										path="/threads/all"
+										name="Threads"
+										render={
+											/* istanbul ignore next */
+										  () => <Threads Renderable={AllThreads} />
 									}
-								/>
-								<Route
-									path="/threads/your-turn"
-									name="Threads"
-									render={
-										/* istanbul ignore next */
+									/>
+									<Route
+										path="/threads/your-turn"
+										name="Threads"
+										render={
+											/* istanbul ignore next */
 										() => <Threads Renderable={MyTurnThreads} />
 									}
-								/>
-								<Route
-									path="/threads/their-turn"
-									name="Threads"
-									render={
-										/* istanbul ignore next */
+									/>
+									<Route
+										path="/threads/their-turn"
+										name="Threads"
+										render={
+											/* istanbul ignore next */
 										() => <Threads Renderable={TheirTurnThreads} />
 									}
-								/>
-								<Route
-									path="/threads/archived"
-									name="Threads"
-									render={
-										/* istanbul ignore next */
+									/>
+									<Route
+										path="/threads/archived"
+										name="Threads"
+										render={
+											/* istanbul ignore next */
 										() => <Threads Renderable={ArchivedThreads} />
 									}
-								/>
-								<Route
-									path="/threads/queued"
-									name="Threads"
-									render={
-										/* istanbul ignore next */
+									/>
+									<Route
+										path="/threads/queued"
+										name="Threads"
+										render={
+											/* istanbul ignore next */
 										() => <Threads Renderable={QueuedThreads} />
 									}
 								/>
@@ -163,27 +165,28 @@ class Layout extends Component {
 									path="/manage-characters"
 									name="Characters"
 									component={ManageCharacters}
-								/>
+									/>
 
-								<Route path="/tools/:tabId" name="Tools" component={Tools} />
-								<Redirect from="/tools" to="/tools/export" />
+									<Route path="/tools/:tabId" name="Tools" component={Tools} />
+									<Redirect from="/tools" to="/tools/export" />
 
 								<Route
 									path="/settings/:tabId"
 									name="Settings"
 									component={Settings}
 								/>
-								<Redirect from="/settings" to="/settings/change-password" />
+									<Redirect from="/settings" to="/settings/change-password" />
 
-								<Route path="/help/:tabId" name="Help" component={Help} />
-								<Redirect from="/help" to="/help/about" />
+									<Route path="/help/:tabId" name="Help" component={Help} />
+									<Redirect from="/help" to="/help/about" />
 
-								<Redirect from="/" to="/dashboard" />
-							</Switch>
-						</Container>
-					</main>
-					<AsideContainer />
-				</div>
+									<Redirect from="/" to="/dashboard" />
+								</Switch>
+							</Container>
+						</main>
+						<AsideContainer />
+					</div>
+				</ThreadProvider>
 				<FooterContainer />
 				<ModalContainer />
 			</div>

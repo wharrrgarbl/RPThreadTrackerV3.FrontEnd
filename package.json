@@ -72,6 +72,7 @@
 		"classnames": "^2.2.6",
 		"dot-prop-immutable": "^1.5.0",
 		"history": "^4.7.2",
+		"immer": "^4.0.0",
 		"immutable": "^4.0.0-rc.12",
 		"jquery": "^3.5.1",
 		"local-storage": "^1.4.2",

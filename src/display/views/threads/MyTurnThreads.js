@@ -1,3 +1,4 @@
+// @ts-check
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
@@ -7,6 +8,7 @@ import ThreadTable from './components/ThreadTable';
 import { getUi } from '../../../infrastructure/selectors/common';
 import * as actions from '../../../infrastructure/actions';
 import * as selectors from '../../../infrastructure/selectors';
+import { useThreadContext } from '~/display/containers/ThreadContext';
 
 const propTypes = {
 	fetchActiveThreads: PropTypes.func.isRequired,
@@ -53,13 +55,21 @@ function mapStateToProps(state) {
 // }
 
 function MyTurnThreads(props) {
-	const { activeThreads, fetchActiveThreads } = props;
+	const { activeThreads, tumblrThreadData, fetchActiveThreads, threadsLoading } = useThreadContext();
 
 	useEffect(() => {
 		if (!activeThreads || !activeThreads.length) {
 			fetchActiveThreads();
 		}
 	}, []);
+
+	useEffect(() => {
+		console.log({ threadsLoading });
+	}, [threadsLoading])
+
+	useEffect(() => {
+		console.log({ tumblrThreadData });
+	}, [tumblrThreadData])
 
 	const {
 		filteredThreads,
