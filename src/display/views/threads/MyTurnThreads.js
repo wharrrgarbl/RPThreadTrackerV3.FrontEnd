@@ -55,7 +55,7 @@ function mapStateToProps(state) {
 // }
 
 function MyTurnThreads(props) {
-	const { activeThreads, tumblrThreadData, fetchActiveThreads, threadsLoading } = useThreadContext();
+	const { activeThreads, fetchActiveThreads, threadsLoading, activeFilteredThreads } = useThreadContext();
 
 	useEffect(() => {
 		if (!activeThreads || !activeThreads.length) {
@@ -68,11 +68,10 @@ function MyTurnThreads(props) {
 	}, [threadsLoading])
 
 	useEffect(() => {
-		console.log({ tumblrThreadData });
-	}, [tumblrThreadData])
+		console.log({ activeThreads });
+	}, [activeThreads])
 
 	const {
-		filteredThreads,
 		openUntrackThreadModal,
 		openEditThreadModal,
 		toggleThreadIsArchived,
@@ -85,7 +84,7 @@ function MyTurnThreads(props) {
 	return (
 		<ThreadTable
 			{...props}
-			filteredThreads={filteredThreads}
+			filteredThreads={activeFilteredThreads}
 			tags={tags}
 			columns={getColumns(characters, partners, lastPosters)}
 			tdProps={getTdProps(

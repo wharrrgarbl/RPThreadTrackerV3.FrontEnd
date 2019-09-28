@@ -13,6 +13,13 @@ import { createContext, useContext } from 'react';
  */
 
 /**
+ * @typedef ThreadTags
+ * @property threadTagId {string}
+ * @property tagText {string}
+ * @property threadId {number}
+ */
+
+/**
  * @typedef TrackerThreadData
  * @property character {Character}
  * @property characterId {number}
@@ -23,7 +30,7 @@ import { createContext, useContext } from 'react';
  * @property postId {string}
  * @property threadHomeUrl {string}
  * @property threadId {number}
- * @property threadTags {string[]}
+ * @property threadTags {ThreadTags[]}
  * @property userTitle {string}
  */
 
@@ -40,31 +47,33 @@ import { createContext, useContext } from 'react';
 
 /**
  * Merged thread data from tracker and tumblr
- * @typedef Thread
- * @property whoknows {number}
+ * @typedef ThreadWithStatus
+ * @property thread {TrackerThreadData}
+ * @property status {TumblrThreadData}
  */
 
 /**
  * @typedef ThreadContext
- * @property trackerThreadData {TrackerThreadData[]}
- * @property tumblrThreadData {TumblrThreadData[]}
- * @property activeThreads {Thread[]}
- * @property archivedThreads {Thread[]}
+ * @property activeThreads {ThreadWithStatus[]}
+ * @property activeFilteredThreads {ThreadWithStatus[]}
+ * @property archivedThreads {ThreadWithStatus[]}
  * @property fetchActiveThreads {() => void}
  * @property fetchArchivedThreads {() => void}
  * @property threadsLoading {boolean}
+ * @property tagFilter {string}
+ * @property setTagFilter {(filter: string) => void}
  */
 
 /** @type {React.Context<ThreadContext>} */
 const Context = createContext({
-	trackerThreadData: [],
-	tumblrThreadData: [],
 	activeThreads: [],
+	activeFilteredThreads: [],
 	archivedThreads: [],
 	fetchActiveThreads: () => { },
 	fetchArchivedThreads: () => { },
-	/** @type {boolean} */
-	threadsLoading: false,
+	threadsLoading: /** @type {boolean} */ (false),
+	tagFilter: '',
+	setTagFilter: (_tag) => { },
 });
 
 export const ThreadContextProvider = Context.Provider;
