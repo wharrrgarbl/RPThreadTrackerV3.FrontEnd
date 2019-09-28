@@ -1,7 +1,7 @@
 // #region imports
 import React from 'react';
 import { shallowWithState } from '~/testhelpers/helpers.unit';
-import AllThreads from '../AllThreads';
+import AllActiveThreads from '../AllThreads';
 // #endregion imports
 
 // #region mocks
@@ -44,7 +44,7 @@ describe('rendering', () => {
 		it('should render valid snapshot', () => {
 			const props = createTestProps();
 			const state = createTestState();
-			const jsx = <AllThreads {...props} />;
+			const jsx = <AllActiveThreads {...props} />;
 			const element = shallowWithState(jsx, state).dive();
 			expect(element).toMatchSnapshot();
 		});
@@ -61,7 +61,7 @@ describe('behavior', () => {
 			const state = createTestState({
 				activeThreads: []
 			});
-			const jsx = <AllThreads {...props} />;
+			const jsx = <AllActiveThreads {...props} />;
 			shallowWithState(jsx, state).dive();
 			expect(fetchActiveThreads).toHaveBeenCalledTimes(1);
 		});
@@ -71,7 +71,7 @@ describe('behavior', () => {
 				fetchActiveThreads
 			});
 			const state = createTestState();
-			const jsx = <AllThreads {...props} />;
+			const jsx = <AllActiveThreads {...props} />;
 			shallowWithState(jsx, state).dive();
 			expect(fetchActiveThreads).toHaveBeenCalledTimes(0);
 		});

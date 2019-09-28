@@ -19,7 +19,7 @@ import LoadingIndicator from '../shared/loading/LoadingIndicator';
 
 import Dashboard from '../views/dashboard/Dashboard';
 import Threads from '../views/threads/Threads';
-import AllThreads from '../views/threads/AllThreads';
+import AllActiveThreads from '../views/threads/AllThreads';
 import MyTurnThreads from '../views/threads/MyTurnThreads';
 import TheirTurnThreads from '../views/threads/TheirTurnThreads';
 import ArchivedThreads from '../views/threads/ArchivedThreads';

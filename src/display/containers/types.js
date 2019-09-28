@@ -32,7 +32,7 @@
  */
 
 /**
- * @typedef TumblrThreadData
+ * @typedef ThreadStatus
  * @property isCallingCharactersTurn {boolean}
  * @property isQueued {boolean}
  * @property lastPostDate {string}
@@ -46,5 +46,5 @@
  * Merged thread data from tracker and tumblr
  * @typedef ThreadWithStatus
  * @property thread {TrackerThreadData}
- * @property status {TumblrThreadData=}
+ * @property status {ThreadStatus=}
  */

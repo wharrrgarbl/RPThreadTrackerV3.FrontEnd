@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { ThreadContextProvider } from "./ThreadContext";
 import axios from 'axios';
-// import produce from 'immer';
 
 /**
  * @typedef TrackerThreadsResponse
@@ -12,7 +11,7 @@ import axios from 'axios';
 
 export function ThreadProvider(props) {
 	const [trackerThreadData, setTrackerThreads] = useState(/** @type {TrackerThreadData[]} */([]));
-	const [threadStatusData, setThreadStatuses] = useState(/** @type {TumblrThreadData[]} */([]));
+	const [threadStatusData, setThreadStatuses] = useState(/** @type {ThreadStatus[]} */([]));
 	const [activeThreadsLoading, setActiveThreadsLoading] = useState(false);
 	const [tagFilter, setTagFilter] = useState('');
 	const allActiveThreads = trackerThreadData.map(trackerThread => {
@@ -52,7 +51,7 @@ export function ThreadProvider(props) {
 		}
 
 		const bucketedRequests = bucketedRequestChunks.map(async chunk => {
-			/** @type {import('axios').AxiosResponse<TumblrThreadData[]>} */
+			/** @type {import('axios').AxiosResponse<ThreadStatus[]>} */
 			const chunkResponse = await axios.post(`${TUMBLR_CLIENT_BASE_URL}api/thread`, chunk);
 			const tumblrThreads = chunkResponse.data;
 			setThreadStatuses(threads => [...threads, ...tumblrThreads]);

@@ -2,9 +2,17 @@
 import { useThreadContext } from "./ThreadContext";
 import { useEffect } from "react";
 
-/** @param type {'myturn' | 'theirturn' | 'queued' | 'archived' | 'all' } */
-export function useThreads(type) {
-	const { activeThreads, fetchActiveThreads, tagFilter, threadsLoading } = useThreadContext();
+/**
+ * TODO
+ * 	Archived threads support
+ * 	Switch to per-type custom hooks for Dashboard
+ *  Figure out where things should live
+ * 	Delete unused stuff
+ */
+
+/** @param statusFilter {(status: ThreadStatus) => boolean} */
+export function useActiveThreads(statusFilter = () => true) {
+	const { activeThreads, fetchActiveThreads, tagFilter } = useThreadContext();
 
 	useEffect(() => {
 		if (!activeThreads || !activeThreads.length) {
@@ -12,38 +20,21 @@ export function useThreads(type) {
 		}
 	}, []);
 
-	const activeFilteredThreads = activeThreads.filter(threadPair => {
+	const threadsFilteredByTag = activeThreads.filter(({ thread }) => {
 		if (!tagFilter) {
-			return threadPair;
+			return true;
 		}
 
-		return threadPair.thread.threadTags && threadPair.thread.threadTags.find(tag => tag.tagText === tagFilter);
+		return thread.threadTags && thread.threadTags.find(tag => tag.tagText === tagFilter);
 	});
 
-	/** @type {ThreadWithStatus[]} */
-	let threads;
-	switch (type) {
-		case 'myturn':
-			threads = activeFilteredThreads.filter(({ status }) => status && status.isCallingCharactersTurn);
-			break;
-		case 'theirturn':
-			threads = activeFilteredThreads.filter(({ status }) => status && !status.isCallingCharactersTurn);
-			break;
-		case 'queued':
-			threads = activeFilteredThreads.filter(({ status }) => status && status.isQueued);
-			break;
-		case 'archived':
-			threads = [];
-			break;
-		case 'all':
-			threads = [];
-			break;
-		default:
-			threads = [];
-	}
+	const threadsFilteredByStatus = threadsFilteredByTag.filter(({ status }) => {
+		if (!status) {
+			return false;
+		}
 
-	return {
-		threads,
-		loading: threadsLoading
-	};
+		return statusFilter(status);
+	});
+
+	return threadsFilteredByStatus
 }

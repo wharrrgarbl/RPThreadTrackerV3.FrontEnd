@@ -1,5 +1,5 @@
 // @ts-check
-import React, { useEffect } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import getColumns from './components/_columns';
@@ -7,7 +7,7 @@ import getTdProps from './components/_getTdProps';
 import ThreadTable from './components/ThreadTable';
 import { getUi } from '../../../infrastructure/selectors/common';
 import * as selectors from '../../../infrastructure/selectors';
-import { useThreads } from '~/display/containers/useThreads';
+import { useActiveThreads } from '~/display/containers/useThreads';
 
 const propTypes = {
 	openUntrackThreadModal: PropTypes.func.isRequired,
@@ -34,7 +34,9 @@ function mapStateToProps(state) {
 }
 
 function MyTurnThreads(props) {
-	const { threads } = useThreads('myturn');
+	const threads = useActiveThreads(
+		threadStatus => threadStatus.isCallingCharactersTurn && !threadStatus.isQueued
+	);
 
 	const {
 		openUntrackThreadModal,
