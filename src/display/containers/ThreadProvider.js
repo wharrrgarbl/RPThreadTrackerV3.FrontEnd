@@ -7,12 +7,12 @@ import axios from 'axios';
 /**
  * @typedef TrackerThreadsResponse
  * @property threadStatusRequestJson {string}
- * @property threads {import("./ThreadContext").TrackerThreadData[]}
+ * @property threads {TrackerThreadData[]}
 */
 
 export function ThreadProvider(props) {
-	const [trackerThreadData, setTrackerThreads] = useState(/** @type {import("./ThreadContext").TrackerThreadData[]} */([]));
-	const [threadStatusData, setThreadStatuses] = useState(/** @type {import("./ThreadContext").TumblrThreadData[]} */([]));
+	const [trackerThreadData, setTrackerThreads] = useState(/** @type {TrackerThreadData[]} */([]));
+	const [threadStatusData, setThreadStatuses] = useState(/** @type {TumblrThreadData[]} */([]));
 	const [activeThreadsLoading, setActiveThreadsLoading] = useState(false);
 	const [tagFilter, setTagFilter] = useState('');
 	const allActiveThreads = trackerThreadData.map(trackerThread => {
@@ -23,23 +23,15 @@ export function ThreadProvider(props) {
 		}
 	});
 
-	const activeFilteredThreads = allActiveThreads.filter(threadPair => {
-		if (!tagFilter) {
-			return threadPair;
-		}
-
-		return threadPair.thread.threadTags && threadPair.thread.threadTags.find(tag => tag.tagText === tagFilter);
-	});
-
 	return (
 		<ThreadContextProvider
 			value={{
 				activeThreads: allActiveThreads,
-				activeFilteredThreads,
 				archivedThreads: [],
 				fetchActiveThreads,
 				fetchArchivedThreads,
 				threadsLoading: activeThreadsLoading,
+				tagFilter,
 				setTagFilter
 			}}
 		>
@@ -60,7 +52,7 @@ export function ThreadProvider(props) {
 		}
 
 		const bucketedRequests = bucketedRequestChunks.map(async chunk => {
-			/** @type {import('axios').AxiosResponse<import("./ThreadContext").TumblrThreadData[]>} */
+			/** @type {import('axios').AxiosResponse<TumblrThreadData[]>} */
 			const chunkResponse = await axios.post(`${TUMBLR_CLIENT_BASE_URL}api/thread`, chunk);
 			const tumblrThreads = chunkResponse.data;
 			setThreadStatuses(threads => [...threads, ...tumblrThreads]);

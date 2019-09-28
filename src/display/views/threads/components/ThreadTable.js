@@ -21,7 +21,6 @@ const propTypes = {
 	openBulkUntrackThreadsModal: PropTypes.func.isRequired,
 	refreshThreads: PropTypes.func.isRequired,
 	setFilteredTag: PropTypes.func.isRequired,
-	tags: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 	tdProps: PropTypes.func.isRequired,
 	threadFilter: PropTypes.shape({
 		filteredTag: PropTypes.string
@@ -84,11 +83,8 @@ class ThreadTable extends React.Component {
 			openBulkUntrackThreadsModal,
 			tdProps,
 			refreshThreads,
-			setFilteredTag,
-			threadFilter,
 			threadTablePageSize,
 			updateThreadTablePageSize,
-			tags,
 			useLightTheme
 		} = this.props;
 		const { selectedItems } = this.state;
@@ -96,11 +92,7 @@ class ThreadTable extends React.Component {
 			<div>
 				<Row>
 					<Col xs="12" sm="6" xl="5">
-						<TagFilterSelect
-							setFilteredTag={setFilteredTag}
-							tags={tags}
-							filteredTag={threadFilter.filteredTag}
-						/>
+						<TagFilterSelect />
 					</Col>
 					<Col xs="12" sm="6" xl="5">
 						<ThreadBulkUpdateControls

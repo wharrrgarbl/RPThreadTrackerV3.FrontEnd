@@ -107,7 +107,6 @@ class Layout extends Component {
 	}
 
 	showLayout() {
-		const { isLoadingIconVisible } = this.props;
 		return (
 			<div className="app" data-spec="layout-app">
 				<ReduxToastr />
@@ -116,7 +115,7 @@ class Layout extends Component {
 					<div className="app-body">
 						<Sidebar {...this.props} />
 						<main className="main">
-							<BreadcrumbWrapper isLoadingIconVisible={isLoadingIconVisible} />
+							<BreadcrumbWrapper />
 							<Container fluid>
 								<Switch>
 									<Route path="/dashboard" name="Dashboard" component={Dashboard} />
