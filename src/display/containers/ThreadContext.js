@@ -7,6 +7,7 @@ import { createContext, useContext } from 'react';
  * @property archivedThreads {ThreadWithStatus[]}
  * @property fetchActiveThreads {() => void}
  * @property fetchArchivedThreads {() => void}
+ * @property updateThread {(thread: TrackerThreadData) => Promise<void>}
  * @property threadsLoading {boolean}
  * @property tagFilter {string}
  * @property setTagFilter {(filter: string) => void}
@@ -21,6 +22,7 @@ const Context = createContext({
 	fetchActiveThreads: () => { },
 	fetchArchivedThreads: () => { },
 	threadsLoading: /** @type {boolean} */ (false),
+	updateThread: (_thread) => Promise.resolve(),
 	tagFilter: '',
 	setTagFilter: (_tag) => { },
 });

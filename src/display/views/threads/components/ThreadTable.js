@@ -92,7 +92,7 @@ class ThreadTable extends React.Component {
 			<div>
 				<Row>
 					<Col xs="12" sm="6" xl="5">
-						<TagFilterSelect />
+						<TagFilterSelect isArchive={isArchive} />
 					</Col>
 					<Col xs="12" sm="6" xl="5">
 						<ThreadBulkUpdateControls

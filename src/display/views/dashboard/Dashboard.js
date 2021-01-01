@@ -10,21 +10,18 @@ import RandomThreadCard from './components/random-thread/RandomThreadCard';
 import Style from './_styles';
 import * as actions from '../../../infrastructure/actions';
 import * as selectors from '../../../infrastructure/selectors';
+import { useThreadContext } from '~/display/containers/ThreadContext';
+import { useActiveThreads, useRecentThreads } from '~/display/containers/useThreads';
 
 const propTypes = {
-	activeThreads: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 	characters: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 	characterThreadCounts: PropTypes.shape({}).isRequired,
 	fetchActiveThreads: PropTypes.func.isRequired,
 	fetchCharacters: PropTypes.func.isRequired,
 	generateRandomThread: PropTypes.func.isRequired,
 	isLoadingIconVisible: PropTypes.bool.isRequired,
-	myTurnThreads: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 	openUntrackThreadModal: PropTypes.func.isRequired,
-	queuedThreads: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 	randomThread: PropTypes.shape({}).isRequired,
-	recentActivityThreads: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-	theirTurnThreads: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 	updateUserSettings: PropTypes.func.isRequired,
 	upsertThread: PropTypes.func.isRequired,
 	userSettings: PropTypes.shape({
@@ -35,27 +32,18 @@ const propTypes = {
 
 function mapStateToProps(state) {
 	const { characters, userSettings, activeThreads, randomThread } = state;
-	const myTurnThreads = selectors.getMyTurnThreads(state);
-	const theirTurnThreads = selectors.getTheirTurnThreads(state);
-	const queuedThreads = selectors.getQueuedThreads(state);
-	const recentActivityThreads = selectors.getRecentActivity(state);
 	const characterThreadCounts = selectors.getThreadCountsByCharacter(state);
 	const isLoadingIconVisible = selectors.getIsLoadingIconVisible(state);
 	return {
 		characters,
 		userSettings,
-		activeThreads,
 		randomThread,
-		myTurnThreads,
-		theirTurnThreads,
-		queuedThreads,
-		recentActivityThreads,
 		characterThreadCounts,
 		isLoadingIconVisible
 	};
 }
 
-class Dashboard extends Component {
+class _Dashboard extends Component {
 	constructor(props) {
 		super(props);
 		// eslint-disable-next-line max-len
@@ -67,10 +55,9 @@ class Dashboard extends Component {
 	}
 
 	componentDidMount() {
-		const { activeThreads, fetchActiveThreads, characters, fetchCharacters } = this.props;
-		if (!activeThreads || !activeThreads.length) {
-			fetchActiveThreads();
-		}
+		const {
+			characters, fetchCharacters
+		} = this.props;
 		if (!characters || !characters.length) {
 			fetchCharacters();
 		}
@@ -117,6 +104,7 @@ class Dashboard extends Component {
 			openUntrackThreadModal,
 			generateRandomThread
 		} = this.props;
+
 		return (
 			<Style className="animated fadeIn dashboard-container">
 				<Row>
@@ -175,7 +163,28 @@ class Dashboard extends Component {
 	}
 }
 
-Dashboard.propTypes = propTypes;
+function DashboardWithContext(props) {
+	const threadContext = useThreadContext();
+	const allActiveThreads = useActiveThreads();
+	const myTurnThreads = allActiveThreads.filter(({ status }) => status.isCallingCharactersTurn);
+	const theirTurnThreads = allActiveThreads.filter(({ status }) => !status.isCallingCharactersTurn);
+	const queuedThreads = allActiveThreads.filter(({ status }) => status.isQueued);
+	console.log({ myTurnThreads, queuedThreads })
+	const recentThreads = useRecentThreads();
+	return (
+		<_Dashboard
+			{...props}
+			updateThread={threadContext.updateThread}
+			activeThreads={allActiveThreads}
+			myTurnThreads={myTurnThreads}
+			theirTurnThreads={theirTurnThreads}
+			queuedThreads={queuedThreads}
+			recentActivityThreads={recentThreads}
+		/>
+	);
+}
+
+DashboardWithContext.propTypes = propTypes;
 export default connect(mapStateToProps, {
 	fetchActiveThreads: actions.fetchActiveThreads,
 	fetchCharacters: actions.fetchCharacters,
@@ -183,4 +192,4 @@ export default connect(mapStateToProps, {
 	openUntrackThreadModal: actions.openUntrackThreadModal,
 	updateUserSettings: actions.updateUserSettings,
 	upsertThread: actions.upsertThread
-})(Dashboard);
+})(DashboardWithContext);

@@ -6,6 +6,7 @@ import { AvForm } from 'availity-reactstrap-validation';
 import TooltipForm from '../../forms/TooltipForm';
 import UpsertThreadForm from '../../forms/upsert-thread/UpsertThreadForm';
 import Modal from '../styled/Modal';
+import { useThreadContext } from '~/display/containers/ThreadContext';
 // #endregion imports
 
 const propTypes = {
@@ -18,7 +19,7 @@ const propTypes = {
 	characters: PropTypes.arrayOf(PropTypes.shape({})).isRequired
 };
 
-class UpsertThreadModal extends Component {
+class _UpsertThreadModal extends Component {
 	constructor(props) {
 		super(props);
 		this.selectCharacter = this.selectCharacter.bind(this);
@@ -26,6 +27,7 @@ class UpsertThreadModal extends Component {
 		this.handleTagAdded = this.handleTagAdded.bind(this);
 		this.handleTagRemoved = this.handleTagRemoved.bind(this);
 		this.getTagValues = this.getTagValues.bind(this);
+		this.submitUpdate = this.submitUpdate.bind(this);
 		this.state = {
 			threadToEdit: props.threadToEdit
 		};
@@ -103,15 +105,21 @@ class UpsertThreadModal extends Component {
 		return threadToEdit.threadTags.map((t) => t.tagText);
 	}
 
+	async submitUpdate() {
+		try {
+			await this.props.updateThread(this.state.threadToEdit);
+			this.props.closeUpsertThreadModal();
+		} catch (_e) {
+		}
+	}
+
 	render() {
 		const {
 			isUpsertThreadModalOpen,
-			submitUpsertThread,
 			closeUpsertThreadModal,
 			threadToEdit,
 			characters
 		} = this.props;
-		const { threadToEdit: requestData } = this.state;
 		const activeCharacters = [].concat(characters.filter((c) => !c.isOnHiatus));
 		return (
 			<Modal
@@ -122,7 +130,7 @@ class UpsertThreadModal extends Component {
 			>
 				<AvForm
 					data-spec="upsert-thread-modal-form"
-					onValidSubmit={() => submitUpsertThread(requestData)}
+					onValidSubmit={this.submitUpdate}
 				>
 					<ModalHeader
 						data-spec="upsert-thread-modal-header"
@@ -158,6 +166,11 @@ class UpsertThreadModal extends Component {
 			</Modal>
 		);
 	}
+}
+
+function UpsertThreadModal(props) {
+	const threadContext = useThreadContext();
+	return <_UpsertThreadModal {...props} updateThread={threadContext.updateThread} />
 }
 
 UpsertThreadModal.propTypes = propTypes;

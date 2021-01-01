@@ -2,13 +2,27 @@
 import { useThreadContext } from "./ThreadContext";
 import { useEffect } from "react";
 
-/**
- * TODO
- * 	Archived threads support
- * 	Switch to per-type custom hooks for Dashboard
- *  Figure out where things should live
- * 	Delete unused stuff
- */
+export function useRecentThreads() {
+	let threads = useActiveThreads(thread => thread.isCallingCharactersTurn && !thread.isQueued);
+	threads.sort((a, b) => {
+		/* istanbul ignore if */
+		if (!a.status && !b.status) {
+			return 0;
+		}
+		/* istanbul ignore if */
+		if (!a.status) {
+			return 1;
+		}
+		/* istanbul ignore if */
+		if (!b.status) {
+			return -1;
+		}
+
+		return new Date(b.status.lastPostDate).getTime() - new Date(a.status.lastPostDate).getTime()
+	});
+
+	return threads.slice(0, 5);
+}
 
 /** @param statusFilter {(status: ThreadStatus) => boolean} */
 export function useActiveThreads(statusFilter = () => true) {
@@ -37,4 +51,24 @@ export function useActiveThreads(statusFilter = () => true) {
 	});
 
 	return threadsFilteredByStatus
+}
+
+export function useArchivedThreads() {
+	const { archivedThreads, fetchArchivedThreads, tagFilter } = useThreadContext();
+
+	useEffect(() => {
+		if (!archivedThreads || !archivedThreads.length) {
+			fetchArchivedThreads();
+		}
+	}, []);
+
+	const threadsFilteredByTag = archivedThreads.filter(({ thread }) => {
+		if (!tagFilter) {
+			return true;
+		}
+
+		return thread.threadTags && thread.threadTags.find(tag => tag.tagText === tagFilter);
+	});
+
+	return threadsFilteredByTag
 }

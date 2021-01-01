@@ -185,9 +185,9 @@ class Layout extends Component {
 						</main>
 						<AsideContainer />
 					</div>
+					<FooterContainer />
+					<ModalContainer />
 				</ThreadProvider>
-				<FooterContainer />
-				<ModalContainer />
 			</div>
 		);
 	}

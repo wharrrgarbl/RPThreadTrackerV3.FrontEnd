@@ -1,13 +1,21 @@
 // @ts-check
 import React from 'react';
+import PropTypes from 'prop-types';
 import { FormGroup, Input } from 'reactstrap';
 import CleanSelect from '../../../shared/styled/CleanSelect';
 import { useThreadContext } from '~/display/containers/ThreadContext';
 
-const TagFilterSelect = () => {
-	const { activeThreads, tagFilter, setTagFilter } = useThreadContext();
+const propTypes = {
+	archived: PropTypes.bool,
+};
+
+/** @param props {{ isArchive?: boolean }} */
+const TagFilterSelect = ({ isArchive }) => {
+	const { activeThreads, archivedThreads, tagFilter, setTagFilter } = useThreadContext();
+	const effectiveThreads = isArchive ? archivedThreads : activeThreads;
+
 	/** @type {ThreadTags[]} */
-	const allThreadTags = activeThreads.map(({ thread }) => thread.threadTags)
+	const allThreadTags = effectiveThreads.map(({ thread }) => thread.threadTags)
 		.filter(tags => !!tags)
 		// @ts-ignore
 		.flat();
@@ -48,4 +56,5 @@ const TagFilterSelect = () => {
 	);
 };
 
+TagFilterSelect.propTypes = propTypes;
 export default TagFilterSelect;
